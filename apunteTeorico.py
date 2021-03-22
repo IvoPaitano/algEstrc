@@ -926,3 +926,85 @@ def e66(cadena):
     """
     return msj
 
+# git remote add origin https://github.com/IvoPaitano/algEstrc.git
+# git branch -M main
+# git push -u origin main
+
+#e62 juego MasterMind
+
+import random
+
+CANT_DIGITOS = 5
+ME_DOY = 'me rindo'
+
+def cod_random():
+    digitos = ('1', '2', '3', '4', '5', '6', '7', '8', '9')
+    codigo = ''
+    for i in range(CANT_DIGITOS):
+        candidato = random.choice(digitos)
+        while candidato in codigo:
+            candidato = random.choice(digitos)
+        codigo = codigo + candidato
+    return codigo
+
+def analizar_propuesta(propuesta, codigo):
+    aciertos = 0
+    coincidencias = 0
+    for i in range(CANT_DIGITOS):
+        if propuesta[i] == codigo[i]:
+            aciertos += 1
+        elif propuesta[i] in codigo:
+            coincidencias += 1
+    return aciertos, coincidencias
+
+def mastermind():
+    codigo = cod_random()
+    intentos = 0
+    
+    propuesta = input('Que codigo propones?')
+    while codigo != propuesta and propuesta != ME_DOY:
+        intentos += 1
+        aciertos, coincidencias = analizar_propuesta(propuesta, codigo)
+        print(f'Tu propuesta "{propuesta}" tiene {aciertos} aciertos y {coincidencias} coincidencias.')
+        print(codigo)
+        propuesta = input('Que codigo propones?')
+    if propuesta == ME_DOY:
+        msj = f'''Te rendiste con {intentos} intentos!!!
+        El codigo era {codigo}!
+        '''
+    else:
+        msj = f'''Felicidades, el codigo era "{codigo}"!!!
+            Intentos : {intentos}.
+        '''
+    return msj
+
+#e681 
+# Escribir funciones que dada una cadena de caracteres:
+#a) Imprima los dos primeros caracteres.
+#b) Imprima los tres últimos caracteres.
+#c) Imprima dicha cadena cada dos caracteres. Ej.: 'recta' debería imprimir 'rca'
+#d) Dicha cadena en sentido inverso. Ej.: 'hola mundo!' debe imprimir '!odnum aloh'
+#e) Imprima la cadena en un sentido y en sentido inverso. Ej: 'reflejo' imprime
+#    'reflejoojelfer'.
+
+def e681a(cadena):
+    return cadena[:2]
+def e681b(cadena):
+    return cadena[-3:]
+def e681c(cadena):
+    res = ''
+    for i in range(len(cadena)):
+        if i%2==0:
+            res += cadena[i]
+    return res
+def e681d(cadena):
+    res = ''
+    for i in range(1, len(cadena)+1):
+        res += cadena[-i]
+    return res
+def e681e(cadena):
+    inv = e681d(cadena)
+    res = cadena + inv
+    return res
+
+
