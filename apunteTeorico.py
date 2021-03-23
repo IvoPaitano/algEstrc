@@ -1007,4 +1007,215 @@ def e681e(cadena):
     res = cadena + inv
     return res
 
+#e682
+#Escribir funciones que dada una cadena y un caracter:
+#a) Inserte el caracter entre cada letra de la cadena. Ej: 'separar' y ',' debería devolver 's,e,p,a,r,a,r'
+#b) Reemplace todos los espacios por el caracter. Ej: 'mi archivo de texto.txt' y '_' debería devolver 'mi_archivo_de_texto.txt'
+#c) Reemplace todos los dígitos en la cadena por el caracter. Ej: 'su clave es: 1540' y 'X' debería devolver 'su clave es: XXXX'
+#d) Inserte el caracter cada 3 dígitos en la cadena. Ej. '2552552550' y '.' debería devolver '255.255.255.0'
 
+def e682a(cadena):
+    res = ''
+    l = len(cadena)
+    for i in range(l):
+        if i == l-1:
+            res += cadena[i]
+        else:
+            res += cadena[i]+','
+    return res    
+def e682b(cadena):
+    #return cadena.replace(' ', '_')
+    res = ''
+    for i in range(len(cadena)):
+        if cadena[i] == ' ':
+            res += '_'
+        else:
+            res += cadena[i]
+    return res
+
+def e682c(cadena, c):
+    l = len(cadena)
+    res = l * c
+    msj = f'su clave es : {res}'
+    return msj
+
+def e682d(cadena, c):
+    res = ''
+    l = len(cadena)
+    for letra in range(l):
+        if letra%3 == 2:
+            res += cadena[letra]+'.'
+        else:
+            res += cadena[letra]
+    return res
+
+#e683
+#Modificar las funciones anteriores, para que reciban un parámetro que indique la cantidad máxima de reemplazos o inserciones a realizar.
+#Hay que pedir un parametro para la cantidad de veces a usar(vueltas), encerrar el cuerpo de la funcion entera en un ciclo con rango (vueltas)
+# y cambiar el return por un print(respuesta), o agregar cada respuesta a un array y returnar un array al final del ciclo.
+
+#684
+#Escribir una función que reciba una cadena que contiene un largo número entero
+# y devuelva una cadena con el número y las separaciones de miles. Por ejemplo, si recibe '1234567890', debe devolver '1.234.567.890'.
+
+
+def e684(cadena):
+    l = len(cadena)
+    if l <=3:
+        return cadena
+    else:
+        aux1 = cadena[:l%3]
+        if len(aux1) == 0:
+            part1 = ''
+        elif len(aux1) <=3:
+            part1 = aux1+'.'
+
+        aux2 = cadena[l%3:]
+        lpart2 = len(aux2)
+        part2 = ''
+        for i in range(lpart2):
+            if i == lpart2-1:
+                part2 += aux2[i]
+            elif i%3 == 2:
+                part2 += aux2[i]+'.'
+            else:
+                part2 += aux2[i]     
+        return part1 + part2
+
+#e685
+#Escribir una función que dada una cadena de caracteres, devuelva:
+#a) La primera letra de cada palabra. Por ejemplo, si recibe 'Universal Serial Bus' debe devolver 'USB'.
+#b) Dicha cadena con la primera letra de cada palabra en mayúsculas. Por ejemplo, si recibe república argentina' debe devolver 'República Argentina'.
+#c) Las palabras que comiencen con la letra ‘A’. Por ejemplo, si recibe 'Antes de ayer' debe devolver 'Antes ayer
+
+def primerLetra(palabra):
+    return palabra[:1]
+def e685a(cadena):
+    palabras = cadena.split()
+    res = ''
+    for palabra in palabras:
+        p = primerLetra(palabra)
+        res += p
+    return res
+
+def primerLetraMayuscula(palabra):
+    res = ''
+    mayuscula = palabra[:1].upper()
+    resto = palabra[1:]
+    res = mayuscula + resto
+    return res
+
+def e685b(cadena):
+    palabras = cadena.split()
+    res = []
+    for palabra in palabras:
+        res.append(primerLetraMayuscula(palabra))
+    res = ' '.join(res)
+    return res
+
+def empiezaConA(palabra):
+    if palabra[:1] == 'a' or palabra[:1] == 'A':
+        return palabra
+def e685c(cadena):
+    palabras = cadena.split()
+    res = []
+    for palabra in palabras:
+        if empiezaConA(palabra):
+            res.append(palabra)
+    res = ' '.join(res)
+    return res
+
+#e686
+#Escribir funciones que dada una cadena de caracteres:
+#a) Devuelva solamente las letras consonantes. Por ejemplo, si recibe 'algoritmos' o 'logaritmos' debe devolver 'lgrtms'.
+#b) Devuelva solamente las letras vocales. Por ejemplo, si recibe 'sin consonantes' debe devolver 'i ooae'.
+#c) Reemplace cada vocal por su siguiente vocal. Por ejemplo, si recibe 'vestuario' debe devolver '.
+#d) Indique si se trata de un palíndromo. Por ejemplo, 'anita lava la tina' es un palíndromo (se lee igual de izquierda a derecha que de derecha a izquierda).
+
+def e686a(cadena):
+    vocales = ['A', 'E', 'I', 'O', 'U', 'a', 'e', 'i', 'o', 'u',]
+    res = ''
+    for letra in cadena:
+        if letra not in vocales:
+            res += letra
+    return res
+def e686b(cadena):
+    vocales = ['A', 'E', 'I', 'O', 'U', 'a', 'e', 'i', 'o', 'u',]
+    res = ''
+    for letra in cadena:
+        if letra in vocales:
+            res += letra
+        elif letra == ' ':
+            res += ' '
+    return res
+def e686b(cadena):
+    vocales = ['a', 'e', 'i', 'o', 'u']
+    res = ''
+    for letra in cadena:
+        if letra in vocales:
+            if letra == 'a':
+                res += 'e'
+            if letra == 'e':
+                res += 'i'
+            if letra == 'i':
+                res += 'o'
+            if letra == 'o':
+                res += 'u'
+            if letra == 'u':
+                res += 'a'                
+        else:
+            res += letra
+    return res
+
+def e686b(cadena):
+    cadse = cadena.split()
+    cadse = ''.join(cadse)
+    f = len(cadse)
+    msj = f'{cadena}, ES palindromo.'
+    for i in range(f):
+        if cadse[i] != cadse[-(i+1)]:
+            msj = f'{cadena}, NO es palindromo.'
+            break
+    return msj
+
+#e687
+#Escribir funciones que dadas dos cadenas de caracteres:
+#a) Indique si la segunda cadena es una subcadena de la primera. Por ejemplo, 'cadena' es una subcadena de 'subcadena'.
+#b) Devuelva la que sea anterior en orden alfábetico. Por ejemplo, si recibe 'kde' y 'gnome' debe devolver 'gnome'.
+
+def e687a(cadena, subcadena):
+    msj = f'"{subcadena}" NO es una subcadena de "{cadena}".'
+    if subcadena in cadena:
+        msj = f'"{subcadena}" ES una subcadena de "{cadena}".'
+    return msj
+
+def e687a(cadena, cadena2):
+    abecedario = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','ñ','o','p','q','r','s','t','u','v','w','x','y','z']
+    cadCorta = '' 
+    cadLarga = ''
+    res = ''
+    if len(cadena) > len(cadena2):
+        cadLarga = cadena 
+        cadCorta = cadena2
+    elif len(cadena) < len(cadena2):
+        cadLarga = cadena2 
+        cadCorta = cadena
+    else:
+        cadCorta = cadena
+        cadLarga = cadena2 
+    for i in range(len(cadCorta)):
+        if cadCorta == cadLarga:
+            res = f'"{cadCorta}" y "{cadLarga}" son IGUALES.'
+            return res
+        elif abecedario.index(cadCorta[i]) > abecedario.index(cadLarga[i]):
+            res = cadLarga
+            return res
+        elif abecedario.index(cadCorta[i]) < abecedario.index(cadLarga[i]):
+            res = cadCorta
+            return res
+        elif i == len(cadCorta)-1 and abecedario.index(cadCorta[i]) == abecedario.index(cadLarga[i]):
+            res = cadCorta
+            return res
+        else:
+            continue
+print(e687a('aaaaaa','aaaaaab'))
