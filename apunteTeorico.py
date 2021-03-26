@@ -1218,4 +1218,355 @@ def e687a(cadena, cadena2):
             return res
         else:
             continue
-print(e687a('aaaaaa','aaaaaab'))
+
+#e688
+#Escribir una función que reciba una cadena de unos y ceros (es decir, un número en representación binaria) y devuelva el valor decimal correspondiente.
+
+def e688(cadena):
+    cin = cadena[::-1]
+    res = 0
+    for i in range(len(cin)):
+        if cin[i] == '1':
+            ac = pow(2, i)
+            res += ac
+    return res
+
+#e689
+#Implementar la función pedir_entero(mensaje, min, max), que debe imprimir
+# el mensaje y luego esperar a que el usuario ingrese un valor. Si el valor ingresado no es un
+# número entero, o no es un número entre min y max (inclusive), se le debe avisar al usuario y
+# pedir el ingreso de otro valor. Una vez que el usuario ingresa un valor válido, la función lo debe devolver.
+
+def pedirNumero():
+    numero = input('Numero: ').strip()
+    return numero
+def e689(mensaje, min, max):
+    print(mensaje)
+    numero = pedirNumero()
+    while True:
+        auxNum = numero[1:]
+        if numero.isnumeric() or auxNum.isnumeric():
+            numero = int(numero)
+            if numero in range(min, (max+1)):
+                return numero
+            else:
+                numero = pedirNumero()
+        else:
+            numero = pedirNumero()
+#EJERCICIOS 7X
+#e73
+#Cartas como tuplas.
+#a) Proponer una representación con tuplas para las cartas de la baraja francesa.
+#b) Escribir una función poker que reciba cinco cartas de la baraja francesa e informe (devuelva
+#    el valor lógico correspondiente) si esas cartas forman o no un poker (es decir que hay 4 cartas con el mismo número).
+
+def e73a():
+    calificaciones = ('Pika', 'Corazon', 'Trebol', 'Diamante')
+    valores = ('A', '2', '3', '4', '5', '6', '7', '8', '9', 'J', 'Q', 'K')
+    baraja = []
+    for i in range(len(calificaciones)):
+        for j in range(len(valores)):
+            auxTupla = [valores[j], calificaciones[i]]
+            baraja.append(auxTupla)
+    return tuple(baraja)
+
+def traerCartas(baraja, c):
+    from random import randint
+    numeros = ()
+    cartas = ()
+    n = 0
+    for i in range(c):
+        while True:
+            n = randint(0, 47)
+            if n not in numeros:
+                numeros += (n),
+                cartas += (baraja[n]),
+                break
+    return cartas
+
+def e73b(nCartas):
+    import collections
+    cartas = traerCartas(e73a(), nCartas)
+    vCartas = ()
+    msj = f'''
+    {cartas}.
+    No hay POKER
+    '''
+    for i in range(len(cartas)):
+        vCartas += (cartas[i][0]),
+    for i in range(len(vCartas)):
+        if collections.Counter(vCartas)[vCartas[i]] >= (nCartas-1):
+            msj = f'''
+            {cartas}.
+            HAY POKER.
+            '''
+            break
+    return msj
+        
+#e74
+#El tiempo como tuplas.
+#a) Proponer una representación con tuplas para representar el tiempo.
+#b) Escribir una función sumar_tiempos que reciba dos tiempos dados y devuelva su suma
+
+def e74a(d,m,a):
+    fecha = (d, m, a)
+    return fecha
+
+def e74b(tiempo1, tiempo2):
+    tiempo1S = a_segundos(*tiempo1)
+    tiempo2S = a_segundos(*tiempo2)
+    suma = tiempo1S+tiempo2S
+    res = e391b(suma)
+    return res
+
+#e75
+#Escribir una función dia_siguiente que dada una fecha expresada como la terna (Día, Mes, Año) (donde Día, Mes y Año son números enteros) 
+#calcule el día siguiente al dado, en el mismo formato.
+
+def e75(d, m, a):
+    meses = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ,11, 12)
+    de31 = (1, 3, 5, 7, 8, 10, 12)
+    de30 = (4, 6, 9, 11)
+    de28 = (2,)
+
+    if d == 31 and m == 12:
+        return ((d-30), (meses[m-12]), (a+1))
+    elif d == 31 and (m in de31):
+        return ((d-30), (meses[m]), (a))
+    elif d == 30 and (m in de30):
+        return ((d-29), (meses[m]), (a))
+    elif d == 28 and (m in de28):
+        return ((d-27), (meses[m]), (a))
+    else:
+        return ((d+1), (meses[m-1]), (a)) 
+#e76
+#Escribir una función dia_siguiente_m que dada una fecha expresada como la
+# terna (Día, Mes, Año) (donde Día y Año son números enteros, y Mes es el texto "Ene", "Feb", …,"Dic", 
+# según corresponda) calcule el día siguiente al dado, en el mismo formato.
+
+def e76(d, mes, a):
+    meses = ('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre')
+    de31 = ('Enero', 'Marzo', 'Mayo', 'Julio', 'Agosto', 'Octubre', 'Diciembre')
+    de30 = ('Abril', 'Junio', 'Septiembre', 'Noviembre')
+    de28 = ('Febrero',)
+
+    if d == 31 and mes == 'Diciembre':
+        return ((d-30), (meses[meses.index('Diciembre')-11]), (a+1))
+    elif d == 31 and (mes in de31):
+        return ((d-30), (meses[meses.index(mes)+1]), (a))
+    elif d == 30 and (mes in de30):
+        return ((d-29), (meses[meses.index(mes)+1]), (a))
+    elif d == 28 and (mes in de28):
+        return ((d-27), (meses[meses.index(mes)+1]), (a))
+    else:
+        return ((d+1), (mes), (a)) 
+
+padrones = [78455, 78455, 79211, 54988, 66540, 47890]
+
+def inscribir_alumnos():
+    """Permite inscribir alumnos al curso"""
+    print("Inscripcion en el curso de Algoritmos y Programación I")
+    inscriptos = []
+    while True:
+        padron = int(input("Ingresa un padrón (<=0 para terminar): "))
+        if padron <= 0:
+            break
+        if padron in inscriptos:
+            print("El padrón ya está en la lista de inscriptos.")
+            continue
+        inscriptos.append(padron)
+    return inscriptos
+
+
+#e77
+#Permitir que los alumnos se puedan inscribir o borrar.
+
+
+def inscribir_alumnos77(inscriptos):
+    """Permite inscribir alumnos al curso"""
+    print("Inscripcion en el curso de Algoritmos y Programación I")
+    while True:
+        padron = int(input("Ingresa un padrón (<=0 para terminar): "))
+        if padron <= 0:
+            break
+        if padron in inscriptos:
+            print("El padrón ya está en la lista de inscriptos.")
+            continue
+        inscriptos.append(padron)
+    return inscriptos
+
+def borrar_alumnos(inscriptos):
+    eliminados = []
+    while True:
+        padron = int(input('Ingrese padron a eliminar (<= 0 para terminar): '))
+        if padron <= 0:
+            break
+        elif padron not in inscriptos:
+            print(f'No existe el padron :{padron}.')
+            continue
+        elif padron in inscriptos:
+            eliminados.append(padron)
+            inscriptos.remove(padron)
+            print(f'Eliminaste padron "{padron}"')
+    print(f'Padrones eliminados: {eliminados}')
+    return inscriptos
+
+
+def e77():
+    inscriptos = []
+    while True:
+        op = input('Bienvenido.\n1)Inscribir.\n2)Borrar.\n3)Ver lista.\n4)Salir.\nOpcion:')
+        if op == '1':
+            insc = inscribir_alumnos77(inscriptos)
+            inscriptos + insc
+        elif op == '2':
+            inscriptos = borrar_alumnos(inscriptos)
+        elif op == '3':
+            print(inscriptos)
+        elif op == '4':
+            print('Saliendo...')
+            break
+        else:
+            op = ''' Bienvenido.\n1)Inscribir.\n2)Borrar.\n3)Salir '''
+
+#e78
+#Inscribir y borrar alumnos como antes, pero registrar también el nombre y apellido
+
+def inscribir_alumnos78(inscriptos, padrones):
+    """Permite inscribir alumnos al curso"""
+    print("Inscripcion en el curso de Algoritmos y Programación I")
+    while True:
+        padron = int(input("Ingresa un padrón (<=0 para terminar): "))
+        if padron <= 0:
+            break
+        if padron in padrones:
+            print("El padrón ya está en la lista de inscriptos.")
+            continue
+        if padron not in padrones:
+            nombre = input("Ingresa nombre: ")
+            apellido = input("Ingresa apellido: ")
+            padrones.append(padron)
+            alumno = [padron, nombre, apellido]
+            inscriptos.append(alumno)
+    return inscriptos
+
+def borrar_alumnos78(inscriptos, padrones):
+    eliminados = []
+    while True:
+        padron = int(input('Ingrese padron a eliminar (<= 0 para terminar): '))
+        if padron <= 0:
+            break
+        elif padron not in padrones:
+            print(f'No existe el padron :{padron}.')
+            continue
+        elif padron in padrones:
+            i = padrones.index(padron)
+            alumnoEliminado = inscriptos[i]
+            eliminados.append(alumnoEliminado)
+            padrones.remove(padron)
+            inscriptos.pop(i)
+            print(f'Eliminaste padron "{padron}"')
+    print(f'Padrones eliminados: {eliminados}')
+    return inscriptos
+
+def e78():
+    inscriptos = []
+    padrones = []
+    for inscripto in inscriptos:
+        padrones.append(inscripto[0])
+    while True:
+        op = input('Bienvenido.\n1)Inscribir.\n2)Borrar.\n3)Ver lista.\n4)Salir.\nOpcion:')
+        if op == '1':
+            insc = inscribir_alumnos78(inscriptos, padrones)
+            inscriptos + insc
+        elif op == '2':
+            inscriptos = borrar_alumnos78(inscriptos, padrones)
+        elif op == '3':
+            print(inscriptos)
+        elif op == '4':
+            print('Saliendo...')
+            break
+        else:
+            op = ''' Bienvenido.\n1)Inscribir.\n2)Borrar.\n3)Salir '''
+
+
+#e79
+#Escribir una función que reciba como parámetro una cadena de palabras separadas
+# por espacios y devuelva, como resultado, cuántas palabras de más de cinco letras tiene la cadena dada.
+
+def e79(cadena):
+    auxCadena = cadena.split()
+    c = 0
+    for palabra in auxCadena:
+        if len(palabra) > 5:
+            c += 1
+    return c
+
+def texto_limpio(texto):
+    texto = texto.split()
+    t_limpio = []
+    for i,palabra in enumerate(texto):
+        if palabra == '':
+            continue
+        elif '...' in palabra:
+            t_limpio.append(palabra)
+            continue
+        elif palabra[-1] == '.':
+            a, b = palabra[:-1], palabra[-1]
+            t_limpio.append(a)
+            t_limpio.append(b)
+            continue
+        else:
+            t_limpio.append(palabra)
+    if t_limpio[-1] != '.':
+        t_limpio.append('.')
+    return t_limpio
+
+def es_corta(palabra,limitePalabra):
+    return (len(palabra) <= limitePalabra)
+
+def acortar_palabra(palabra, limitePalabra):
+    return (palabra[:limitePalabra] + '@')
+
+def e79(texto, limitePalabra, costoPalabraCorta, costoPalabraLarga):
+    textolimpio = texto_limpio(texto)
+    textoFinal = []
+    costo = 0
+    ultimaVuelta = len(textolimpio)-1
+    for i, palabra in enumerate(textolimpio):
+        if palabra == '.' and i == ultimaVuelta:
+            textoFinal.append('STOPSTOP')
+        elif palabra == '.':
+            textoFinal.append('STOP')
+        elif palabra == ',':
+            textoFinal.append(palabra)
+        elif es_corta(palabra, limitePalabra):
+            costo += costoPalabraCorta
+            textoFinal.append(palabra)
+        else:
+            costo += costoPalabraLarga
+            palabra = acortar_palabra(palabra, limitePalabra)
+            textoFinal.append(palabra)
+    return texto,' '.join(textoFinal), costo
+
+#e761
+#Escribir una función que reciba una tupla de elementos e indique si se encuentran ordenados de menor a mayor o no.
+
+def e761(tupla):
+    tuplaOrdenada = sorted(list(tupla))
+    return (tuplaOrdenada == list(tupla))
+
+#762 Dominó.
+#a) Escribir una función que indique si dos fichas de dominó encajan o no. Las fichas son recibidas en dos tuplas, por ejemplo: (3,4) y (5,4)
+#b) Escribir una función que indique si dos fichas de dominó encajan o no. Las fichas son recibidas en una cadena, por ejemplo: 3-4 2-5.
+#       Nota: utilizar la función split de las cadenas.
+
+def e762a(tupla1, tupla2):
+    a, b = tupla1
+    return (a in (tupla2) or b in (tupla2))
+
+def e762b(cadena):
+    a,b = cadena.split()
+    return (a[0] in b or a[2] in b)
+
+
