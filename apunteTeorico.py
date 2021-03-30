@@ -1570,3 +1570,504 @@ def e762b(cadena):
     return (a[0] in b or a[2] in b)
 
 
+#e763
+#Campaña electoral
+#a) Escribir una función que reciba una tupla con nombres, y para cada nombre imprima el mensaje Estimado <nombre>, vote por mí.
+#b) Escribir una función que reciba una tupla con nombres, una posición de origen p y una cantidad n, e imprima el mensaje anterior para 
+#       los n nombres que se encuentran a partir de la posición p.
+#c) Modificar las funciones anteriores para que tengan en cuenta el género del destinatario, #para ello, deberán recibir una tupla de tuplas,
+#        conteniendo el nombre y el género.
+
+
+def e763a(nombres):
+    for nombre in nombres:
+        print(f'{nombre}, vote por mi.')
+
+def e763b(nombres, p, n):
+    soloEstos = nombres[(p-1):(p+n-1)]
+    for nombre in soloEstos:
+        print(f'{nombre}, vote por mi.')
+
+nombres = (('nombre1','masculino'),('nombre2','femenino'),('nombre3','femenino'),('nombre4','femenino'),('nombre5','femenino'),('nombre6','masculino'),('nombre7','femenino'),('nombre8','masculino'))
+
+def e763aInclusive(nembres):
+    for nembre in nembres:
+        if nembre[1] == 'masculino':
+            print(f'Sr.{nembre[0]}, vote por mi.')
+        else:
+            print(f'Sra.{nembre[0]}, vote por mi.')
+
+def e763bInclusive(nembres, p, n):
+    soloEstes = nembres[(p-1):(p+n-1)]
+    for nembre in soloEstes:
+        if nembre[1] == 'masculino':
+            print(f'Sr.{nembre[0]}, vote por mi.')
+        else:
+            print(f'Sra.{nembre[0]}, vote por mi.')
+
+#e766
+# Dada una lista de números enteros y un entero k, escribir una función que:
+#a) Devuelva tres listas, una con los menores, otra con los mayores y otra con los iguales a k.
+#b) Devuelva una lista con aquellos que son múltiplos de k.
+
+def e766a(numeros, k):
+    menores = []
+    mayores = []
+    iguales = []
+
+    for numero in numeros:
+        if numero < k:
+            menores.append(numero)
+        elif numero > k:
+            mayores.append(numero)
+        else:
+            iguales.append(numero)
+    return menores, mayores, iguales
+
+def e766b(numeros, k):
+    multiplos = []
+    for numero in numeros:
+        if not numero%k:
+            multiplos.append(numero)
+    return multiplos
+
+#e767
+#Escribir una función que reciba una lista de tuplas (Apellido, Nombre, Inicial_segundo_nombre)
+# y devuelva una lista de cadenas donde cada una contenga primero el nombre, luego la inicial con un punto, y luego el apellido.
+
+#lista = [('Paitano','Ivo','E'),('Simon','Diego','O'),('Nicolas','Aparicio','E'),('Mario','Paitano','D'),('Abigail','Martinez','L'),('Maria','Martinez','T')]
+
+def e767(lista):
+    nombres = []
+    for datos in lista:
+        nombreOrdenado = (datos[0],datos[2]+'.',datos[1])
+        nombre = ' '.join(nombreOrdenado)
+        nombres.append(nombre)
+    return nombres
+
+#e768
+#Inversión de listas
+#a) Realizar una función que, dada una lista, devuelva una nueva lista cuyo contenido sea igual a la original pero invertida.
+#    Así, dada la lista ['Di', 'buen', 'día', 'a', 'papa'], deberá devolver ['papa', 'a', 'día', 'buen', 'Di'].
+#b) Realizar otra función que invierta la lista, pero en lugar de devolver una nueva, modifique la lista dada para invertirla, sin usar listas auxiliares.
+
+
+#lista = ['Di', 'buen', 'día', 'a', 'papa']
+
+def e768a(lista):
+    invertida = []
+    for i in range(1, len(lista)+1):
+        invertida.append(lista[-i])
+    return invertida
+
+def e768b(lista):
+    lim = len(lista)
+    for i in range(lim):
+        lista.append(lista[i])
+    return lista[5:]
+
+#e769
+#Escribir una función empaquetar para una lista, donde epaquetar significa indicar
+# la repetición de valores consecutivos mediante una tupla (valor, cantidad de repeticiones).
+#Por ejemplo, empaquetar([1, 1, 1, 3, 5, 1, 1, 3, 3]) debe devolver [(1, 3), (3, 1), (5,1), (1, 2), (3, 2)].
+
+def empaquetar(lista):
+    n = lista[0]
+    c = 0
+    i = 0
+    res = []
+    while i < len(lista):
+        if n == lista[i]:
+            c+=1
+        else:
+            auxTupla = (n, c)
+            res.append(auxTupla)
+            n = lista[i]
+            c = 0
+            i-=1
+        i+=1
+    ultimaTupla = (n, c)
+    res.append(ultimaTupla)
+    return res
+
+
+def busqueda_binaria(lista, x):
+    """Búsqueda binaria Precondición: la lista está ordenada Devuelve -1 si x no está en lista; Devuelve p tal que lista[p] == x, si x está en lista"""
+    izq = 0
+    der = len(lista) - 1
+    while izq <= der:
+        medio = (izq + der) // 2
+        print("[DEBUG]", "izq:", izq, "der:", der, "medio:", medio)
+        if lista[medio] == x:
+            # Encontramos el elemento; devolvemos su posición
+            return medio
+        if lista[medio] > x:
+            # Seguimos buscando en el segmento de la izquierda
+            der = medio - 1
+        else:
+            # Seguimos buscando en el segmento de la derecha
+            izq = medio + 1
+    # El valor no fue encontrado
+    return -1
+
+
+#e841
+# Escribir una función que reciba una lista desordenada y un elemento, que:
+#a) Busque todos los elementos coincidan con el pasado por parámetro y devuelva la cantidad de coincidencias encontradas.
+#b) Busque la primera coincidencia del elemento en la lista y devuelva su posición.
+#c) Utilizando la función anterior, busque todos los elementos que coincidan con el pasado por parámetro y devuelva una lista con las posiciones.
+
+#listaDesordenada = ['a', 'e', 'b', 'error', '123', 'e', 'hola', '522', 'ivo', 'paitano', 'e']
+
+def e841a(listaDesordenada, elemento):
+    coincidentes = []
+    coincidencias = 0
+    for palabra in listaDesordenada:
+        if palabra == elemento:
+            coincidentes.append(palabra)
+            coincidencias += 1
+    return coincidentes, coincidencias
+
+def e841b(listaDesordenada, elemento):
+    indice = -1
+    if elemento in listaDesordenada:
+        indice = listaDesordenada.index(elemento)
+        return indice
+    else: 
+        return indice
+
+def e841c(listaDesordenada, elemento):
+    pos = []
+    while True:
+        ind = e841b(listaDesordenada, elemento)
+        if ind == -1:
+            break
+        else:
+            pos.append(ind)
+            inicio = ind + 1
+            listaDesordenada = listaDesordenada[inicio:]
+    return pos
+
+#e842
+# Escribir una función que reciba una lista de números no ordenada, que:
+#a) Devuelva el valor máximo.
+#b) Devuelva una tupla que incluya el valor máximo y su posición.
+#c) ¿Qué sucede si los elementos son cadenas de caracteres?
+# Nota: no utilizar lista.sort()
+
+#listaNumeros = [61, 10, 2, 20, 30, 3, 5, 40, 4, 60, 43, 6]
+
+def e842a(listaNumeros):
+    maximo = listaNumeros[0]
+    for numero in listaNumeros:
+        if numero > maximo:
+            maximo = numero
+    return maximo
+
+def e842b(listaNumeros):
+    maximo = listaNumeros[0]
+    indice = 0
+    for i, numero in enumerate(listaNumeros):
+        if numero > maximo:
+            maximo = numero
+            indice = i
+    return indice, maximo
+
+#def_e842c: Si los elementos son cadenas, en la coomparacion los convierto en numeros (int)
+
+
+
+#e843
+#Agenda simplificada
+#Escribir una función que reciba una cadena a buscar y una lista de tuplas (nombre_completo, telefono), y busque dentro de la lista,
+# todas las entradas que contengan en el nombre completo la cadena recibida (puede ser el nombre, el apellido o sólo una parte de cualquiera de ellos).
+#Debe devolver una lista con todas las tuplas encontradas.
+
+#lista = [('Ivo Ezequiel Paitano', '11 6453 5377'), ('Ezequiel Martinez', '11 7753 5377'), ('Abigail Lucero Martinez', '11 1234 5678'), ('Mario Daniel', '11 8765 4321'), ('Diego Simon Hurtado', '11 2365 4871'), ('Nicolas Aparicio', '11 2365 1487'), ('Daniel Sosa', '11 6235 8497'), ('Esteban Amaya', '11 6532 5623'), ('Daniel Garcia', '11 2356 2154'), ('Cesar Olivera', '11 5292 8547'), ('Joel Efrain Rivero', '11 4578 1265')]
+def e843(cadena, lista):
+    res = []
+    for nombre in lista:
+        datos = nombre[0].split()
+        for dato in datos:
+            if cadena.lower() in dato.lower():
+                res.append(nombre)
+                break
+    return res
+
+#e844
+#Sistema de facturación simplificado
+#Se cuenta con una lista ordenada de productos, en la que uno consiste en una tupla de (identificador, descripción, precio), y una lista de los productos a facturar,
+# en la que cada uno consiste en una tupla de (identificador, cantidad).
+#Se desea generar una factura que incluya la cantidad, la descripción, el precio unitario y el precio total de cada producto comprado, y al final imprima el total general.
+#Escribir una función que reciba ambas listas e imprima por pantalla la factura solicitada.
+
+#Valores de entrada : listaProductos, listaFacturar
+#Valores de salida : por C/P cantidad, descripcion{}, precio unitario y total;total general.
+
+#productosOrdenados = [(1,'auriculares',6500),(2,'cooler',1500),(3,'disco duro',5000),(4,'disco solido',9000),(5,'gabinete',4800),(6,'microfono',1800),(7,'microprocesador',10000),(8,'monitor',15000),(9,'mouse',2500),(10,'parlantes',6500),(11,'placa de sonido',4700),(12,'placa de video',25000),(13,'placa madre',8500),(14,'ram',3200),(15,'teclado',1900)]
+#listaFacturar = [(2,3),(4,4),(1000,1000),(8,1),(10,5),(2000,10),(14,2),(5,10)], listaSinProductos = [], listaError = [(20,3),(4000,4),(800,1),(100,5),(104,2),(50,10)]
+
+def traerProducto(id):
+    prod = f'Error, producto ID:"{id}" no existe.'
+    for producto in productosOrdenados:
+        idProducto = producto[0]
+        if idProducto == id:
+            prod = producto
+            break
+    return prod
+
+def armarProducto(cantidad, descripcion, precioUnitario, precioTotal):
+    prod = f'Cantidad:{cantidad} - Descripcion:{descripcion} - Precio Unitario:{precioUnitario} - Total:{precioTotal}.\n'
+    return prod
+
+def e844(productosOrdenados, listaFacturar):
+    totalGeneral = 0
+    prodError = []
+    factura = ''
+    ultimoProducto = len(listaFacturar)-1
+    for indice, prod in enumerate(listaFacturar):
+        id = prod[0]
+        infoProducto = traerProducto(id)
+        if type(infoProducto) is tuple:
+            cant = prod[1]
+            descr = infoProducto[1]
+            preUni = infoProducto[2]
+            preTot = cant * preUni
+            prodCuenta = armarProducto(cant, descr, preUni, preTot)
+            factura += prodCuenta
+            totalGeneral += preTot
+            if indice == ultimoProducto:
+                factura += f'Total: {totalGeneral}'
+        else:
+            prodError.append(id)
+
+    if len(factura) <= 0 and len(prodError) <= 0:
+        factura = 'No introdujo ningun producto.'
+    elif len(factura) <= 0 and len(prodError) >= 1:
+        factura = f'No existen los productos con ID:{prodError}.'
+    
+    return factura
+
+
+#e845.
+#Escribir una función que reciba una lista ordenada y un elemento. Si el elemento
+# se encuentra en la lista, debe encontrar su posición mediante búsqueda binaria y devolverlo. Si
+# no se encuentra, debe agregarlo a la lista en la posición correcta y devolver esa nueva posición.
+#(No utilizar lista.sort().)
+
+listaOrdenada = [1,2,3,4,5,6,7,8,9,10,20,30,40,50,55,66,77,80,90,99,100,150,151,152,200,230,232,234,250]
+
+def encontrarPosicion(lista, elemento):
+    izq = 0
+    der = len(lista) - 1
+    while izq <= der:
+        medio = (izq+der) // 2
+        if lista[medio] == elemento:
+            return medio
+        elif lista[medio] > elemento:
+            der = medio - 1
+        else:
+            izq = medio + 1
+    return medio
+
+def e845(listOrd, elemento):
+    if elemento in listOrd:
+        pos = encontrarPosicion(listOrd, elemento)
+        return pos, listOrd
+    else:
+        pos = encontrarPosicion(listOrd, elemento)
+        print(pos, listaOrdenada[pos])
+        if elemento > listOrd[pos]:
+            listOrd.insert(pos+1, elemento)
+            return pos+1, listOrd
+        else:
+            listOrd.insert(pos, elemento)
+            return pos, listOrd
+
+inventario = [('The Art of Computer Programming, Volumes 1-4','Donald Knuth', 12, 179.62),('Concrete Mathematics: A Foundation for Computer Science','Donald Knuth', 5, 54.77),('The Pragmatic Programmer: From Journeyman to Master','Andrew Hunt and David Thomas', 3, 33.17),]
+
+def total_libros_autor(inventario, autor_buscado):
+    total = 0
+    for titulo, autor, cantidad, precio in inventario:
+        if autor == autor_buscado:
+            total += cantidad
+    return total
+
+#Especiales 8X
+#Dejamos como ejercicio implementar
+# las funciones total_libros_autor, cantidad_poco_stock y titulos_caros en términos de map y filter.
+
+#def segunAutor(autorp):
+    #return [cantidad for titulo, autor, cantidad, precio in inventario if autorp == autor]
+
+#def segunPrecio(preciop):
+    #return [cantidad for titulo, autor, cantidad, precio in inventario if preciop == precio]
+
+def cantidades_segun_criterio(criterio, valor):
+    lista = []
+    if criterio == 'titulo':
+        for titulo, autor, cantidad, precio in inventario:
+            if titulo == valor:
+                lista.append(cantidad)
+    elif criterio == 'autor':
+        for titulo, autor, cantidad, precio in inventario:
+            if autor == valor:
+                lista.append(cantidad)
+    elif criterio == 'cantidad':
+        for titulo, autor, cantidad, precio in inventario:
+            if cantidad == valor:
+                lista.append(cantidad)                
+    else:
+        for titulo, autor, cantidad, precio in inventario:
+            if precio == valor:
+                lista.append(cantidad)                
+    return lista
+
+def etotal_libro_segun(criterio, valor):
+    return sum(cantidades_segun_criterio(criterio, valor))
+
+def probandoCosas(f):
+    return sum(f)
+
+#probandoCosas([cantidad for titulo, autor, cantidad, precio in inventario if autor == 'Donald Knuth'])
+
+#e951
+#Escribir una función que reciba una lista de tuplas, y que devuelva un diccionario en donde las claves sean los primeros elementos de las tuplas,
+# y los valores una lista con los segundos.
+l = [ ('Hola', 'don Pepito'), ('Hola', 'don Jose'), ('Buenos', 'días'), ('Hola', 'don Ivo'), ('Buenos', 'parlantes'), ('asd', 'que hace'), ('Hola', 'ante ultimo'), ('Buenos', 'Auriculares')]
+def e951(lista_tuplas):
+    dic = {}
+    for clave, valor in lista_tuplas:
+        if clave in dic:
+            if type(dic[clave]) is list:
+                dic[clave].append(valor)
+            else:
+                aux = [dic[clave]]
+                aux.append(valor)   
+                dic[clave] = aux
+        else:
+            dic[clave] = valor
+    return dic
+
+
+#952
+#Diccionarios usados para contar.
+#a)Escribir una función que reciba una cadena y devuelva un diccionario con la cantidad de apariciones de cada palabra en la cadena. Por ejemplo, si recibe ”Qué lindo día que
+#   hace hoy” debe devolver: { 'que': 2, 'lindo': 1, 'día': 1, 'hace': 1, 'hoy': 1}.
+#b)Escribir una función que cuente la cantidad de apariciones de cada caracter en una cadena de texto, y los devuelva en un diccionario.
+#c)Escribir una función que reciba una cantidad de iteraciones de una tirada de 2 dados a realizar y devuelva la cantidad de veces que se observa cada valor de la suma de los dos dados.
+# Nota: utilizar el módulo random para obtener tiradas aleatorias.
+
+cadena = 'Que lindo día que hace hoy'
+easyCadena = 'abbcccddddeeeeeffffffggggggghhhhhhhhiiiiiiiiijjjjjjjjjj'
+
+def e952a(cadena):
+    cadenaSplit = cadena.split()
+    cadFinal = map(lambda palabra : palabra.lower(), cadenaSplit)
+    dic = {}
+    for palabra in cadFinal:
+        if palabra not in dic:
+            dic[palabra.lower()] = 1
+        else:
+            c = dic[palabra.lower()] + 1
+            dic[palabra] = c
+    return dic
+
+def e952b(cadena):
+    caracteres = list(easyCadena)
+    dic = {}
+    for caracter in caracteres:
+        if caracter in dic:
+            c = dic[caracter] + 1
+            dic[caracter] = c
+        else:
+            dic[caracter] = 1
+    return dic
+
+#defe952c No entendi el enunciado, perdon u.u
+
+#e953
+#Continuación de la agenda.
+#Escribir un programa que vaya solicitando al usuario que ingrese nombres.
+#a) Si el nombre se encuentra en la agenda (implementada con un diccionario), debe mostrar el teléfono y, opcionalmente, permitir modificarlo si no es correcto.
+#b) Si el nombre no se encuentra, debe permitir ingresar el teléfono correspondiente.
+#El usuario puede utilizar la cadena ” * ”, para salir del programa.
+
+agendaDic = {'Ivo Ezequiel Paitano':'11 6453 5377', 'Ezequiel Martinez':'11 7753 5377', 'Abigail Lucero Martinez':'11 1234 5678', 'Mario Daniel':'11 8765 4321', 'Diego Simon Hurtado':'11 2365 4871', 'Nicolas Aparicio':'11 2365 1487', 'Daniel Sosa':'11 6235 8497', 'Esteban Amaya':'11 6532 5623', 'Daniel Garcia':'11 2356 2154', 'Cesar Olivera':'11 5292 8547', 'Joel Efrain Rivero':'11 4578 1265'}
+
+def e953(agenda):
+    nombre = input('Ingrese nombre(" * ", para terminar.): ')
+    while '*' not in nombre:
+        if nombre in agenda:
+            print(f'Telefono de "{nombre}": '+agenda[nombre]+'.\n1)Modificar.\n2)Continuar.\n')
+            #Muestra el telefono y menu.
+            op = int(input('Ingrese opcion:'))
+            if op == 1:
+                telefonoActualizado = input(f'Ingrese nuevo telefono para "{nombre}":')
+                agenda[nombre] = telefonoActualizado
+        else:
+            nuevoTelefono = input(f'Ingrese telefono para "{nombre}": ')
+            agenda[nombre] = nuevoTelefono
+        nombre = input('Ingrese nombre(" * ", para terminar.): ')
+    return agenda
+
+#e954
+# Escribir una función que reciba un texto y para cada caracter presente en el texto devuelva la cadena más larga en la que se encuentra ese caracter.
+
+cadena = 'es un texto grande, gigante, y engorroso muy gegege.'
+caracteresEspeciales = (',','.',':',' ')
+
+def caracteresLimpios(cadena):
+    caracteres = list(cadena)
+    caracteres = filter(lambda caracter: caracter not in caracteresEspeciales, caracteres)
+    caracteres = list(set(caracteres))
+    caracteres.sort()
+    return caracteres
+
+def palabrasLimpias(cadena):
+    palabras = cadena.split()
+    res = []
+    for palabra in palabras:
+        if not palabra.isalnum():
+            if palabra[0].isalnum():
+                palabra=palabra[:len(palabra)-1]
+            else:
+                palabra=palabra[1:]
+        res.append(palabra)
+    return res
+    
+def limpiar(cadena, criterio):
+    if criterio == 'caracter':
+        return caracteresLimpios(cadena)
+    else:
+        return palabrasLimpias(cadena)
+
+def filtrarPalabras(palabras, caracter):
+    return [palabra for palabra in palabras if caracter in palabra]
+
+def laMasLarga(palabras):
+    #return list(map(lambda palabra: len(palabra), palabras)) -> con map.
+    longitudes = [len(palabra) for palabra in palabras]
+    mayor = longitudes.index(max(longitudes))
+    masLarga = palabras[mayor]
+    return masLarga
+
+
+def e954(cadena):
+    dic = {}
+    caracteres = limpiar(cadena, 'caracter')
+    palabras = limpiar(cadena, 'palabra')
+    for caracter in caracteres:
+        palabrasValidas = filtrarPalabras(palabras, caracter)
+        palabraLarga = laMasLarga(palabrasValidas)
+        dic[caracter] = palabraLarga
+
+    return dic
+
+lista1 = [1,2,3]
+print(lista1)
+lista2 = lista1
+print(lista2)
+lista2[1] = 5
+print(lista1)
+print(lista2)
