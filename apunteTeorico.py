@@ -2064,10 +2064,196 @@ def e954(cadena):
 
     return dic
 
-lista1 = [1,2,3]
-print(lista1)
-lista2 = lista1
-print(lista2)
-lista2[1] = 5
-print(lista1)
-print(lista2)
+dic = {'a':'1', 'b':'2','c':'3'}
+dicarroba = {'a':'1', 'b':'2', 'c':'3', 'd':'4@', 'e':'5', 'f':'@6'}
+
+def emails(diccionario):
+    [print(f'El e-mail de {k} es {v}') for k,v in dic.items()]
+
+def emailDic(diccionario):
+    buenos = {k:v for k,v in diccionario.items() if '@' in v}
+    return buenos
+
+# with open('archivo.txt') as archivo:
+#     for i, linea in enumerate(archivo):
+#         print(i, linea.rstrip())
+
+#e11101
+# Escribir una función, llamada head que reciba un archivo y un número N e imprima las primeras N líneas del archivo.
+
+import os
+def head(archivo, n):
+    msj = ''
+    ruta = os.path.join('archivos', 'archivo.txt')
+    with open (ruta) as archivo:
+        lineas = archivo.readlines()[0:n]
+        for linea in lineas:
+            msj+=linea
+    return msj
+
+
+#e11102
+# Escribir una función, llamada cp, que copie todo el contenido de un archivo
+#   (sea de texto o binario) a otro, de modo que quede exactamente igual.
+# Nota: utilizar archivo.read(bytes) para leer como máximo una cantidad de bytes.
+
+def cp(archivoCopiar, archivoCopia, esBinario):
+    rutaCopiar = os.path.join('archivos', archivoCopiar)
+    rutaCopia = os.path.join('archivos', archivoCopia)
+    read = 'r'
+    write = 'w'
+    if esBinario:
+        read += 'b'
+        write += 'b'
+    with open(rutaCopiar, read) as archivo:
+        contenido = archivo.read()
+        with open(rutaCopia, write) as archivoc:
+            if esBinario:
+                archivoc.write(contenido)
+            else:
+                archivoc.write(contenido+'\n')
+
+#e11103
+# Escribir una función, llamada wc, que dado un archivo de texto, lo procese e
+#   imprima por pantalla cuántas líneas, cuantas palabras y cuántos caracteres contiene el archivo.
+
+
+def imprimirlineas(archivo):
+    ruta = os.path.join('archivos',archivo)
+    especiales = ('\n',' ',',')
+    with open(ruta, 'r') as archivo:
+        lineas = archivo.readlines()
+        nl = str(len(lineas))
+
+        archivo.seek(0)
+        palabrasLineas = archivo.read()
+        
+        palabras = list(palabrasLineas.split())
+        np = len(palabras)
+        
+        pal = list(palabrasLineas)
+        caracteres = filter(lambda c: c not in especiales, pal)
+        nc = len(list(caracteres))
+    return nl, np, nc
+
+#e11104
+# Escribir una función, llamada grep, que reciba una cadena y un archivo e imprima las líneas del archivo que contienen la cadena recibida.
+def grep(cadena, archivo):
+    #Crear una lista vacia
+    #Necesito cada fila por separado
+    #Buscar la cadena dentro de c/u - f.
+    #   si está, guardar la fila en la lista creada previamente.
+    #Finalmente retornar la lista.
+    ruta = os.path.join('archivos', archivo)
+    with open(ruta, 'r') as archivo:
+        lineas = archivo.readlines()
+    return [linea for linea in lineas if cadena in linea]
+
+#e11.10.5
+#Escribir una función, llamada rot13, que reciba un archivo de texto de origen
+# y uno de destino, de modo que para cada línea del archivo origen, se guarde una línea cifrada
+# en el archivo destino. El algoritmo de cifrado a utilizar será muy sencillo: a cada caracter comprendido
+# entre la a y la z, se le suma 13 y luego se aplica el módulo 26, para obtener un nuevo caracter.
+
+abecedario = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4,'f':5,
+              'g':6, 'h':7, 'i':8, 'j':9, 'k':10,'l':11,
+              'm':12, 'n':13, 'o':14, 'p':15, 'q':16,
+              'r':17, 's':18, 't':19, 'u':20, 'v':21, 'w':22, 'x':23, 'y':24, 'z':25}
+
+def cifrar(c):
+    ni = (abecedario[c] + 13) % 26
+    for i,v in abecedario.items():
+        if v == ni:
+            return i
+
+def rot13(archivo, archivoCifrado):
+    especiales = (',','',' ','.','0','1','2','3','4','5','6','7','8','9','\n')
+    #De a-z comprenden un valor de 0-26, a dicho valor sumarle 13 y aplicar modulo 26.
+    # se debe cifrar todo el texto, de modo que tenga la misma cantidad de lineas 
+    ruta = os.path.join('archivos', archivo)
+    rutaCifrado = os.path.join('archivos', archivoCifrado)
+    contenido = []
+    with open(ruta, 'r') as archivo:
+    #Separar el contenido del mensaje por lineas
+        lineas = archivo.readlines()
+        #Crear un bucle con las linas ya separadas
+        for linea in lineas:
+            # Crear una cadena auxiliar
+            cad = ''
+            # separar cada linea por caracteres.
+            caracteres = list(linea)
+            #crear un ciclo para recorrer cada caracter
+            for caracter in caracteres:
+                #verificar que no sea un caracter especial
+                if caracter not in especiales:
+                    #aplicar a cada caracter el metodo de cifrado
+                    caracter = cifrar(caracter)
+                #sumar a la cadena auxiliar cada caracter 
+                cad += str(caracter)
+                #sumar a una lista vacia la cadena ya cifrada.
+            contenido.append(cad)
+    #Terminado el ciclo, agregamos la lista al archivo
+    with open(rutaCifrado, 'w') as archivoc:
+        archivoc.writelines(contenido)
+
+#11106
+# Persistencia de un diccionario
+#a) Escribir una función cargar_datos que reciba un nombre de archivo, cuyo contenido
+#    tiene el formato clave, valor y devuelva un diccionario con el primer campo como clave
+#    y el segundo como diccionario.
+#b) Escribir una función guardar_datos que reciba un diccionario y un nombre de archivo,
+#    y guarde el contenido del diccionario en el archivo, con el formato clave, valor
+
+import csv
+#recibe arhicov con clave y valor separados por ,(coma)
+def cargar_datos(archivo):
+    #Crear un diccionario vacio.
+    diccionario = {}
+    ruta = os.path.join('archivos', archivo)
+    with open(ruta, 'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        #Obtener los datos a partir de la 2da linea
+        next(csv_reader)
+        #Crear un ciclo sobre las lineas obtenidas
+        for linea in csv_reader:
+            #en cada iteracion agregar respectivamente clave y valor al diccionario
+            diccionario[linea[0]] = linea[1]
+    return diccionario
+
+diccionariokv = {
+    'uno':'1',
+    'dos':'2',
+    'tres':'3',
+    'cuatro':'4',
+    'cinco':'5',
+    'seis':'6',
+    'siete':'7',
+    'ocho':'8',
+    'nueve':'9',
+} 
+
+def guardar_datos(diccionario, archivo):
+    ruta = os.path.join('archivos', archivo)
+    lista = []
+    with open(ruta, 'w', newline='') as new_file:
+        #para escribir en archivos CSV
+        csv_writer = csv.writer(new_file, delimiter=',')
+        for key,value in diccionario.items():
+            linea = (key,value)
+            lista.append(linea)
+        csv_writer.writerows(lista)
+
+
+def modulo(vector):
+    """Calcula el módulo de un vector.
+    Pre: el vector es una secuencia de números.
+    Post: Devuelve el módulo del vector."""
+    if not vector:
+        raise ValueError("El vector debe tener al menos dimensión 1")
+    suma = 0
+    for x in vector:
+        if not isinstance(x, (int, float, complex)):
+            raise TypeError("El vector debe contener valores numéricos")
+        suma += x * x
+    return suma ** 0.5
+
