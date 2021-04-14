@@ -2257,3 +2257,285 @@ def modulo(vector):
         suma += x * x
     return suma ** 0.5
 
+#e141
+# Escribir las funciones validar_numero_positivo y validar_cadena_no_vacia,
+#   que deben lanzar TypeError si la validación del valor falla, y en caso contrario simplemente
+#   devolver el valor. Incluir todas las funciones de validación en un módulo validaciones.py.
+
+def validar_numero_positivo(n):
+    if not isinstance(n, (int, float, complex)):
+        raise TypeError(f'"{n}" no es un numero.')
+    elif n <= 0:
+        raise TypeError(f'Solo numeros positivos.')        
+    return n
+
+def validar_cadena_no_vacia(cad):
+    cad = cad.strip()
+    if not cad:
+        raise TypeError('Cadena vacia.')
+    return cad
+
+class Punto: 
+    """Representación de un punto en el plano en
+    coordenadas cartesianas (x, y)"""
+    def __init__(self, x, y):
+        "Constructor de Punto. x e y deben ser numéricos"
+        self.x = x
+        self.y = y
+    
+    def __str__(self):
+        """Devuelve la representación del Punto como
+        cadena de texto."""
+        return "({}, {})".format(self.x, self.y)
+
+
+p = Punto(3,4)
+q = Punto(6,5)
+
+c = Punto(-2, 3)
+d = Punto(8, -1)
+
+class Rectangulo:
+    "Representa un rectángulo en el plano"
+
+    def __init__(self, noroeste, sudeste):
+        """Crea un Rectangulo a partir de los Puntos correspondientes a las
+        esquinas superior izquierda e inferior derecha"""
+        self.noroeste = noroeste
+        self.sudeste = sudeste
+
+    def getNoroeste(self):
+        return self.noroeste
+
+    def sudeste(self):
+        return self.sudeste
+
+
+    #e1491
+    # Mejorar la clase Rectangulo, agregando métodos para calcular las dimensiones alto y ancho, y las coordenadas del punto central.
+
+    def alto_ancho(self):
+        alto = self.noroeste.y - self.sudeste.y
+        ancho = self.noroeste.x - self.sudeste.x
+        return abs(alto), abs(ancho)
+    
+    def puntoCentral(self):
+        return ((self.noroeste.x + self.sudeste.x)/2), ((self.noroeste.y + self.sudeste.y)/2)
+
+#1492
+# Modificar el método __lt__ de Hotel para poder ordenar de menor a mayor las
+#   listas de hoteles según el criterio: primero por ubicación, en orden alfabético y dentro de cada
+#   ubicación por la relación calidad-precio.
+
+class Hotel:
+    """Representa un hotel: sus atributos son:
+    nombre, ubicacion, puntaje y precio."""
+
+    def __init__(self, nombre, ubicacion, puntaje, precio):
+        """Crea un Hotel.
+        nombre y ubicacion deben ser cadenas no vacías,
+        puntaje y precio son números."""
+        self.nombre = validar_cadena_no_vacia(nombre)
+        self.ubicacion = validar_cadena_no_vacia(ubicacion)
+        self.puntaje = validar_numero_positivo(puntaje)
+        self.precio = validar_numero_positivo(precio)
+
+    def __str__(self):
+        """Conversión a cadena de texto."""
+        return "{} de {} - Puntaje: {} - Precio: {} pesos - {} C/P.".format(
+        self.nombre,
+        self.ubicacion,
+        self.puntaje,
+        self.precio,
+        self.ratio()
+        )
+
+    def ratio(self):
+        """Calcula la relación calidad-precio de un hotel"""
+        return ((self.puntaje ** 2) * 10) / self.precio
+
+    def __lt__(self, otro):
+        # primero por ubicación, en orden alfabético y dentro de cada
+        # ubicación por la relación calidad-precio.
+        """Compara dos hoteles segundo su ubicacion"""
+        if self.ubicacion == otro.ubicacion:
+            return self.ratio() < otro.ratio()
+        return self.ubicacion < otro.ubicacion
+
+# h1 = Hotel("Hotel 1*", "flores", 1, 10)
+# h2 = Hotel("Hotel 2*", "mataderos", 2, 40)
+# h3 = Hotel("Hotel 3*", "mdq", 3, 130)
+# h4 = Hotel("Hotel 4*", "mdq", 4, 130)
+# h5 = Hotel("Hotel 5*", "mataderos", 2, 60)
+# h6 = Hotel("Hotel 6*", "mataderos", 4, 100)
+# hoteles = [h1,h2,h3,h4,h5,h6]
+
+
+#e1493
+#a) Implementar la clase Intervalo(desde, hasta) que representa un intervalo entre dos
+#    instantes de tiempo (números enteros expresados en segundos), con la condición desde < hasta.
+#b) Implementar el método duracion que devuelve la duración en segundos del intervalo.
+#c) Implementar el método interseccion que recibe otro intervalo y devuelve un nuevo intervalo
+#    resultante de la intersección entre ambos, o lanzar una excepción si la intersección es nula.
+#d) Implementar el método union que recibe otro intervalo. Si los intervalos no son adyacentes
+#    ni intersectan, debe lanzar una excepción. En caso contrario devuelve un nuevo
+#    intervalo resultante de la unión entre ambos.
+
+
+class Intervalo:
+    #No es contemplada el caso de un intervalo dentro del otro (por que estamos cansados y me duele la vista...).
+    #No esta contemplado el caso en que el segundo intervalo sea menor al primero.
+    #Para contemplar los casos anteriores basta con verificar cual es el mayor y menor intervalo.
+    # y verificar que un intervalo no este dentro o fuera totalmente del otro.
+    def __init__(self, desde, hasta):
+        self.desde = desde
+        self.hasta = hasta
+        #Validar : desde < hasta
+        if self.desde > self.hasta:
+            raise ValueError('"desde" debe ser MENOR a "hasta"')
+    
+    def duracion(self):
+        return (self.hasta - self.desde)
+
+    def interseccion(self, otro):
+        if self.hasta > otro.desde:
+            return Intervalo(otro.desde, self.hasta)
+        else:
+            raise Exception('Interseccion Nula.')
+            
+    def union(self, otro):
+        if self.hasta >= otro.desde:
+            return Intervalo(self.desde, otro.hasta)
+        else:
+            raise Exception('No existe union de intervalos.')
+
+    def __str__(self):
+        return f'({self.desde} - {self.hasta})'
+
+    def __repr__(self):
+        return f'Intervalo({self.desde},{self.hasta})'
+
+#e1494
+#a) Crear una clase Fraccion, que cuente con dos atributos: dividendo y divisor, que se
+#    asignan en el constructor, y se imprimen como X/Y en el método __str__.
+#b) Implementar el método __add__ que recibe otra fracción y devuelve una nueva fracción con la suma de ambas.
+#c) Implementar el método __mul__ que recibe otra fracción y devuelve una nueva fracción con el producto de ambas.
+#d) Crear un método simplificar que modifica la fracción actual de forma que los valores
+#    del dividendo y divisor sean los menores posibles.
+
+def esPrimo(numero):
+    for i in range(2, numero):
+        if numero%i == 0:
+            return False
+    return True
+
+def elMenor(a,b):
+    if a < b:
+        return a
+    return b
+
+def nPrimosHasta(hasta):
+    primos = []
+    for n in range(2, hasta+1):
+        if esPrimo(n):
+            primos.append(n)
+    return primos
+
+class Fraccion:
+    def __init__(self, dividendo, divisor):
+        self.dividendo = dividendo
+        self.divisor = divisor
+    
+    def __str__(self):
+        return f'{self.dividendo}/{self.divisor}'
+
+    def __add__(self, otro):
+        if self.divisor != otro.divisor:
+            return Fraccion(((self.dividendo * otro.divisor) + (otro.dividendo * self.divisor)),self.divisor * otro.divisor)
+        else:
+            return Fraccion(self.dividendo + otro.dividendo, self.divisor)
+
+    def __mul__(self, otro):
+        return Fraccion(self.dividendo * otro.dividendo, self.divisor * otro.divisor)
+
+    def simplificar(self):
+        if (esPrimo(self.dividendo) or esPrimo(self.divisor) and ((self.dividendo != 2) and (self.divisor != 2))):
+            return Fraccion(self.dividendo, self.divisor)
+        
+        menor = elMenor(self.dividendo, self.divisor)
+        listaNPrimos = nPrimosHasta(menor)
+
+        for np in listaNPrimos:
+            while True:
+                if np > self.dividendo or np > self.divisor:
+                    return Fraccion(self.dividendo, self.divisor)
+                elif self.dividendo % np == 0 and self.divisor % np == 0:
+                    self.dividendo = self.dividendo / np
+                    self.divisor = self.divisor / np
+                else:
+                    break
+        return Fraccion(self.dividendo, self.divisor)
+
+
+#e1496
+#Escribir una clase Caja para representar cuánto dinero hay en una caja de un
+#   negocio, desglosado por tipo de billete (por ejemplo, en el quiosco de la esquina hay 6 billetes
+#   de 500 pesos, 7 de 100 pesos y 4 monedas de 2 pesos). Las denominaciones permitidas son 1, 2,
+#   5, 10, 20, 50, 100, 200, 500 y 1000 pesos. Debe comportarse según el siguiente ejemplo:
+
+class Caja:
+    def __init__(self, desglose):
+        denominaciones = (1, 2, 5, 10, 20, 50, 100, 200, 500, 1000)
+        self.desglose = desglose
+        aux = []
+        for den, cant in self.desglose.items():
+            if den not in denominaciones:
+                aux.append(den)
+        if len(aux) > 0:
+            raise ValueError(f'Denominaciones :{aux}, no permitidas')
+    def desglose(self):
+        return self.desglose
+
+    def total(self):
+        sum = 0
+        for den, cant in self.desglose.items():
+            sum += (den * cant)
+        return sum
+
+    def __str__(self):
+        for den, cant in self.desglose.copy().items():
+            if cant == 0:
+                del self.desglose[den]
+        return f'Caja {self.desglose} total:{self.total()} pesos'
+
+    def agregar(self, billetes):
+        denominaciones = (1, 2, 5, 10, 20, 50, 100, 200, 500, 1000)
+        aux = []
+        for den, cant in billetes.items():
+            if den in denominaciones:
+                try:
+                    self.desglose[den] += cant
+                except:
+                    self.desglose[den] = cant
+            else:
+                aux.append(den)
+        if len(aux) > 0:
+            raise ValueError(f'Denominaciones :{aux}, no permitidas')
+
+    def quitar(self, billetes):
+        denominaciones = (1, 2, 5, 10, 20, 50, 100, 200, 500, 1000)
+        aux = []
+        noSuficientes = []
+        for den, cant in billetes.items():
+            if den not in denominaciones:
+                aux.append(den)
+            else:
+                if cant > self.desglose[den]:
+                    raise ValueError(f'No hay suficientes billetes de : {den}')
+                    noSuficientes.append(den)
+                else:
+                    self.desglose[den] -= cant
+                    
+        if len(aux) > 0:
+            raise ValueError(f'Denominaciones :{aux}, no permitidas')
+
