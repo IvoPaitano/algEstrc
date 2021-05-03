@@ -2424,6 +2424,8 @@ class Intervalo:
 #    del dividendo y divisor sean los menores posibles.
 
 def esPrimo(numero):
+    if numero == 1:
+        return False
     for i in range(2, numero):
         if numero%i == 0:
             return False
@@ -2538,4 +2540,911 @@ class Caja:
                     
         if len(aux) > 0:
             raise ValueError(f'Denominaciones :{aux}, no permitidas')
+
+#e1551 Papel, Boligrafo, Marcador
+#Escribir una clase Papel que contenga un texto, un método escribir, que reciba una cadena para agregar al texto, y el método __str__ que
+#   imprima el contenido del texto.
+
+class Papel:
+    txt = 'Texto base.\n'
+
+    def escribir(self, cadena):
+        Papel.txt += cadena
+    
+    def __str__(self):
+        return f'{Papel.txt}'
+
+
+#Escribir una clase Boligrafo que contenga una cantidad de tinta, y un método escribir, que reciba un texto y un papel 
+# sobre el cual escribir. Cada letra escrita debe reducir la cantidad de tinta contenida. Cuando la tinta se acabe, debe lanzar
+# una excepción.
+
+class Boligrafo:
+    def __init__(self, tinta):
+        self.tinta = tinta
+    
+    def escribir(self, texto, papel):
+        for letra in texto:
+            if self.tinta > 0:
+                papel.escribir(letra)
+                self.tinta -= 1
+            else:
+                raise Exception('Te quedaste sin tinta.')
+
+
+#Escribir una clase Marcador que herede de Boligrafo, y agregue el método recargar, que reciba la cantidad de tinta a agregar.
+
+class Marcador(Boligrafo):
+    pass
+
+    def recargar(self, ctinta):
+        self.tinta += ctinta
+
+#No entendi muy bien esos enunciados y no se si son buena practica, pero los hice con lo que pude entender...
+
+#numero de Materia
+
+class Materia:
+    def __init__(self, nMateria, nombre, creditos, estado=False, nota=None):
+        self.nMateria = nMateria
+        self.nombre = nombre
+        self.creditos = creditos
+        self.estado = estado
+        self.nota = nota
+
+    def __str__(self):
+        return f'{self.nMateria} - {self.nombre} - {self.creditos}'
+
+analisis2 = Materia("61.03", "Análisis 2", 8)
+fisica2 = Materia("62.01", "Física 2", 8)
+algo1 = Materia("75.40", "Algoritmos 1", 6)
+
+class Carrera:
+    def __init__(self, listMaterias):
+        self.listMaterias = listMaterias
+    
+    def aprobar(self, anm, anota):
+        nombres = []
+        for materia in self.listMaterias:
+            nombres.append(materia.nMateria)
+        if anm not in nombres:
+            raise Exception('Esta materia no existe.')
+        else:
+            for materia in self.listMaterias:
+                if materia.nMateria == anm:
+                    materia.estado = True
+                    materia.nota = anota
+
+    def creditos(self):
+        totalCreditos = 0
+        for materia in self.materiasAprobadas():
+            totalCreditos += materia.creditos
+        return totalCreditos
+
+    def promedio(self):
+        sumNotas = 0
+        for materia in self.materiasAprobadas():
+            sumNotas += materia.nota
+        return sumNotas / len(self.materiasAprobadas())
+
+    def materiasAprobadas(self):
+        aprobadas = []
+        for materia in self.listMaterias:
+            if materia.estado:
+                aprobadas.append(materia)
+        return aprobadas
+    
+    def __str__(self):
+        creditos = 0
+        promedio = 'N/A'
+        materiasAprobadas = 'Ninguna'
+        strMateriasAprobadas = ''
+
+        aprobadas = self.materiasAprobadas()
+        for materia in aprobadas:
+            strMateria = f'{materia.nMateria} {materia.nombre} ({materia.nota}).\n'
+            strMateriasAprobadas += strMateria
+
+        if len(self.materiasAprobadas()):
+            creditos = self.creditos()
+            promedio = self.promedio()
+            materiasAprobadas = strMateriasAprobadas
+
+        return f'Creditos: {creditos} -- Promedio: {promedio} -- Materias aprobadas:\n{materiasAprobadas}'
+
+#LISTAS ENLAZADAS
+
+class _Nodo:
+    def __init__(self, dato=None, prox=None):
+        self.dato = dato
+        self.prox = prox
+
+    def __str__(self):
+        return str(self.dato)
+
+def ver_lista(nodo):
+    """Recorre todos los nodos a través de sus enlaces,
+    mostrando sus contenidos."""
+    while nodo is not None:
+        print(nodo)
+        nodo = nodo.prox
+
+class ListaEnlazada:
+    """Modela una lista enlazada."""
+    def __init__(self):
+        """Crea una lista enlazada vacía."""
+        # referencia al primer nodo (None si la lista está vacía)
+        self.prim = None
+        # cantidad de elementos de la lista
+        self.len = 0
+
+    def __len__(self):
+        return self.len
+
+    def __str__(self):
+        inicio = '['
+        contenido = ''
+        nodo = self.prim
+        lim = (self.len)-1
+        cont = 0
+        while nodo:
+            if cont != lim:
+                contenido += str(nodo.dato)+', '
+            else:
+                contenido += str(nodo.dato)
+            nodo = nodo.prox
+            cont += 1
+        fin = ']'
+        res = inicio+contenido+fin
+        return res
+        
+    def pop(self, i=None):
+        """Elimina el nodo de la posición i, y devuelve el dato contenido.
+        Si i está fuera de rango, se levanta la excepción IndexError.
+        Si no se recibe la posición, devuelve el último elemento."""
+
+        if i is None:
+            i = self.len - 1
+
+        if i < 0 or i >= self.len:
+            raise IndexError("Índice fuera de rango")
+            if i == 0:
+                # Caso particular: saltear la cabecera de la lista
+                dato = self.prim.dato
+                self.prim = self.prim.prox
+        else:
+            # Buscar los nodos en las posiciones (i-1) e (i)
+            n_ant = self.prim
+            n_act = n_ant.prox
+            for pos in range(1, i):
+                n_ant = n_act
+                n_act = n_ant.prox
+            
+            # Guardar el dato y descartar el nodo
+            dato = n_act.dato
+            n_ant.prox = n_act.prox
+            self.len -= 1
+            return dato            
+
+    def remove(self, x):
+        """Borra la primera aparición del valor x en la lista.
+        Si x no está en la lista, levanta ValueError"""
+
+        if self.len == 0:
+            raise ValueError("Lista vacía")
+
+        if self.prim.dato == x:
+            # Caso particular: saltear la cabecera de la lista
+            self.prim = self.prim.prox
+        else:
+            # Buscar el nodo anterior al que contiene a x (n_ant)
+            n_ant = self.prim
+            n_act = n_ant.prox
+            while n_act is not None and n_act.dato != x:
+                n_ant = n_act
+                n_act = n_ant.prox
+
+            if n_act == None:
+                raise ValueError("El valor no está en la lista.")
+
+            # Descartar el nodo
+            n_ant.prox = n_act.prox
+
+        self.len -= 1
+
+    def insert(self, i, x):
+        """Inserta el elemento x en la posición i.
+        Si la posición es inválida, levanta IndexError"""
+        if i < 0 or i > self.len:
+            raise IndexError("Posición inválida")
+
+        nuevo = _Nodo(x)
+        
+        if i == 0:
+            # Caso particular: insertar al principio
+            nuevo.prox = self.prim
+            self.prim = nuevo
+        else:
+            # Buscar el nodo anterior a la posición deseada
+            n_ant = self.prim
+            for pos in range(1, i):
+                n_ant = n_ant.prox
+            # Intercalar el nuevo nodo
+            nuevo.prox = n_ant.prox
+            n_ant.prox = nuevo
+        
+        self.len += 1
+    
+    def append(self, x):
+        nuevoNodo = _Nodo(x)
+        if self.len == 0:
+            self.prim = nuevoNodo
+        else:
+            ultNodo = self.prim
+            i = self.len
+            while ultNodo.prox:
+                ultNodo = ultNodo.prox
+            ultNodo.prox = nuevoNodo
+        self.len += 1 
+    
+    def index(self, x):
+        if self.len == 0:
+            raise ValueError('Lista Vacia.')
+        else:
+            nodoAct = self.prim
+            for pos in range(0, self.len):
+                if nodoAct.dato == x:
+                    return pos
+                else:
+                    nodoAct = nodoAct.prox
+            raise IndexError('No existe indice con ese valor.')
+
+    def extend(self, otra):
+        #Si esta vacia:
+        primerNodo = otra.prim
+        lenOtra = otra.len
+        if not len(self):
+            self.prim = primerNodo
+            return True
+
+        ultNodo = self.prim
+        while True:
+            if ultNodo.prox is None:
+                break
+            else:
+                ultNodo = ultNodo.prox
+        ultNodo.prox = primerNodo
+        self.len += lenOtra
+    
+    def remover_todos(self, x):
+        if self.len == 0:
+            #retornamos que la lista esta vacia.
+            raise IndexError('Lista Vacia!')
+            
+        n_ant = None
+        n_act = self.prim
+
+        while n_act:
+            if n_act.dato == x:
+                if n_act == self.prim:
+                    self.prim = n_act.prox
+                    n_act = self.prim
+                else:
+                    n_ant.prox = n_act.prox
+                    n_act = n_ant.prox
+                self.len -= 1
+            else:
+                n_ant = n_act
+                n_ant.prox = n_act.prox
+                n_act = n_act.prox
+
+    def duplicar(self, x):
+        n_act = self.prim
+        while n_act:
+            if n_act.dato == x:
+                n_no = _Nodo(x)
+                n_no.prox = n_act.prox
+                n_act.prox = n_no
+                n_act = n_no.prox
+                print('\n')
+                self.len += 1
+            else:
+                n_act = n_act.prox
+
+    def filtrar(self, funcion):
+        n_act = self.prim
+        newLista = ListaEnlazada()
+
+        while n_act:
+            if funcion(n_act.dato):
+                new_nodo = _Nodo(n_act.dato)
+                if newLista.len <= 0:
+                    newLista.prim = new_nodo
+                else:
+                    ult_nodo.prox = new_nodo
+                ult_nodo = new_nodo
+                newLista.len += 1
+            n_act = n_act.prox
+        return newLista
+
+#primos = le.filtrar(esPrimo)
+
+#e1597
+#Una lista circular es una lista cuyo último nodo está ligado al primero, de
+# modo que es posible recorrerla infinitamente. Escribir la clase ListaCircular, incluyendo los
+# métodos insert, append, remove y pop.
+
+class ListaEnlazadaCircular:
+    def __init__(self):
+        self.ni = None
+        self.nu = None
+        self.len = 0
+    
+    def __len__(self):
+        return self.len
+    
+    def __str__(self):
+        res = ''
+        nodo = self.ni
+        # while nodo.prox != self.ni:
+        #     res += nodo.dato+'->'
+        #     nodo = nodo.prox
+        # res += nodo.dato
+        # nodo = self.ni
+        for i in range(0, self.len):
+            if i != (self.len -1):
+                res += nodo.dato+'->'
+            else:
+                res += nodo.dato
+            nodo = nodo.prox
+        return res
+
+    def append(self, x):
+        #crea nodo
+        nn = _Nodo(x)
+        #Si esta vacia
+        if not self.len:
+            self.ni = nn
+            self.nu = nn 
+            self.nu.prox = self.ni
+        #Si NO esta vacia
+        else:
+            self.nu.prox = nn
+            self.nu = nn
+            self.nu.prox = self.ni
+        self.len += 1
+
+    def pop(self, i=None):
+        #Casos especiales:
+        #Lista vacia
+        if self.len == 0:
+            return IndexError('Lista vacia amigo.')
+        
+        #Eliminar elemento unico de una lista
+        if self.len == 1 and (i == 0 or i == None):
+            nodoRes = self.ni
+            self.ni = None
+            self.nu = None
+            self.len -= 1
+            return nodoRes
+        
+        nal = self.ni
+        nar = None
+        nodoRes = None
+
+        #Caso 1: Eliminar nodo inicio
+        if i == 0:
+            nodoRes = self.ni
+            self.ni = self.ni.prox
+            self.nu.prox = self.ni
+            #return nodoRes
+            self.len -= 1
+            return nodoRes
+
+        #Caso 2: Eliminar nodo ultimo
+        if i == (self.len - 1) or i == None:
+            nau = None
+            #Encontrar ante-ultimo nodo
+            na = self.ni
+            while True:
+                #Este es el anteultimo
+                if na.prox == self.nu:
+                    nau = na
+                    break
+                else:
+                    na = na.prox
+            nodoRes = self.nu
+            nau.prox = self.ni
+            self.nu = nau
+            self.len -= 1
+            return nodoRes
+
+        #Caso 3: Eliminar cualquier nodo que no sea ni ultimo/primero
+        if i > 0 and i < self.len - 1:
+            for pos in range(0, i):
+                nar = nal
+                nal = nal.prox
+            nodoRes = nal
+            nar.prox = nal.prox
+            nal = nal.prox
+            self.len -= 1
+            return nodoRes
+
+        #Indes fuera de rango, lo ponemos al final para no generar problemas.
+        if i < 0 or i >= self.len:
+            raise IndexError(f'Index {i}, no existe.')
+
+    def insert(self, i, x):
+        #Caso 1 - indice == 0
+        if i == 0:
+            print('CASO 1')
+            nn = _Nodo(x)
+
+            nn.prox = self.ni
+            self.ni = nn
+            self.nu.prox = nn
+
+            self.len += 1
+
+        #Caso 2 - indice > 0 AND indice <= (len de lista - 1)
+        if i > 0 and i <= (self.len -1):
+            print('CASO 2')
+            # para este caso necesitaremos 2 nuevos datos. El nodo con el indice en el que queremos insertar -> nodo anterior(na)
+            # y el nodo con indice anterior en el que queremos insertar -> nodo anterior al actual (naa)
+            #Creamos las variables naa vacia y na con el primer valor para poder crear el ciclo
+            na = self.ni
+            naa = None
+            #Buscamos y obtenemos los 2 nodos, al terminar el ciclo naa, y na tendran los valores correspondientes.
+            for pos in range(0, i):
+                naa = na
+                na = na.prox   
+            nn = _Nodo(x)
+            nn.prox = na
+            naa.prox = nn
+            self.len += 1
+        #Caso 3 - indice >= (len de lista)
+        
+        if i >= self.len:
+            nn = _Nodo(x)
+            nn.prox = self.ni
+            self.nu.prox = nn
+            self.nu = nn
+            self.len += 1
+        #No se contemplo el caso de lista vacia, para agregarlo basta con verificar si self.len(longitud de lista) == 0
+        # llamamos al metodo apend y le pasamos el valor de x que contiene insert.
+        # si la lista esta vacia, el indice da igual cual sea, el nuevo modulo sera el primero y ultimo.
+
+    def remove(self, x):
+        #Encontrar el nodo con dicho valor (na)
+        na = self.ni
+        naa = None
+        c = 0
+        #Obtenemos en na el nodo cuyo valor es igual a x.
+        for pos in range(0, self.len):
+            if na.dato == x:
+                break
+            if na.prox == self.ni:
+                raise ValueError(f'No se encontro el valor :{x}')
+            naa = na
+            na = na.prox
+            c = pos
+
+        #Caso Especial, eliminar el unico nodo de la lista.
+        if (na == self.ni or na == self.nu) and self.len == 1:
+            print('Caso Especial Lista con 1 nodo.')
+            self.ni = None
+            self.nu = None
+            self.nu.prox = None
+            self.len = 0
+            return True
+
+        #Caso 1 - x = nodo inicial
+        if na == self.ni:
+            print('Caso 1 Eliminar nodo inicial')
+            self.ni = self.ni.prox
+            self.len -= 1
+            self.nu.prox = self.ni
+            return True
+
+        #Caso 2 - x = nodo ultimo
+        if na == self.nu:
+            print('Caso 2 Eliminar nodo ULTIMO')
+            self.nu = naa
+            self.nu.prox = self.ni
+            self.len -= 1
+            return True
+
+        #caso 3 - x != ni and x != nu and pos[na] > 0 and pos[na] < self.len-1
+        if (na != self.ni and na != self.nu) and (pos > 0 and pos < self.len-1):
+            print('Case 3 Eliminar un nodo central')
+            naa.prox = na.prox
+            self.len -= 1
+            return True
+
+
+#EJERCICIOS 16.4
+#Escribir una clase TorreDeControl que modele el trabajo de una torre de control
+#de un aeropuerto con una pista de aterrizaje. Los aviones que están esperando para aterrizar
+#tienen prioridad sobre los que están esperando para despegar. La clase debe funcionar conforme al siguiente ejemplo:
+class _Vuelo:
+    def __init__(self, codigo=None, accion=None):
+        self.codigo = codigo
+        self.accion = accion
+
+    def __str__(self):
+        return (f'{self.codigo}-{self.accion}')
+
+
+class TorreDeControl():
+    def __init__(self):
+        self.vuelos = []
+
+    def hayVuelos(self):
+        return len(self.vuelos) >= 1
+
+    def nuevo_arribo(self, codigo):
+        #Creamos el vuelo
+        nuevoVuelo = _Vuelo(codigo, 'arribo')
+        self.vuelos.append(nuevoVuelo)
+
+    def nueva_partida(self, codigo):
+        #Creamos el vuelo
+        nuevoVuelo = _Vuelo(codigo, 'partida')
+        self.vuelos.append(nuevoVuelo)
+
+    def asignar_pista(self):
+        if not self.hayVuelos():
+            raise ValueError('No hay vuelos en espera.')
+        else:
+            print(f'El vuelo {self.vuelos[0].codigo} {self.vuelos[0].accion} con exito.')
+            self.vuelos.pop(0)
+
+    def ver_estado(self):
+        arribosAux = ''
+        despeguesAux = ''
+        for vuelo in self.vuelos:
+            if vuelo.accion == 'arribo':
+                arribosAux += vuelo.codigo+'-'
+            else:
+                despeguesAux += vuelo.codigo+'-'
+        print(f'Vuelos esperando para aterrizar :{arribosAux}.\nVuelos esperando para despegar : {despeguesAux}.')
+
+
+# e1642 Escribir las clases Impresora y Oficina que permita modelar el funcionamiento
+# de un conjunto de impresoras conectadas en red.
+# Una impresora:
+#  Tiene un nombre, y una capacidad máxima de tinta.
+#  Permite encolar un documento para imprimir (recibiendo el nombre del documento).
+#  Permite imprimir el documento que está al frente de la cola.
+# – Si no hay documentos encolados, se muestra un mensaje informándolo.
+# – Si no hay tinta suficiente, se muestra un mensaje informándolo.
+# – En caso contrario, se muestra el nombre del documento, y se gasta 1 unidad de tinta.
+#  Permite cargar el cartucho de tinta
+# Una oficina:
+#  Permite agregar una impresora
+#  Permite obtener una impresora por nombre
+#  Permite quitar una impresora por nombre
+#  Permite obtener la impresora que tenga menos documentos encolados.
+
+
+class Impresora:
+    def __init__(self, nombre, capacidad_max_tinta):
+        self.nombre = nombre
+        self.capacidad_max_tinta = capacidad_max_tinta
+        self.documentos = []
+        self.tinta = capacidad_max_tinta
+
+    def hayTinta(self):
+        return self.tinta >= 1
+
+    def encolar(self, nombre_documento):
+        self.documentos.append(nombre_documento)
+
+    def imprimir(self):
+        #Si existe un primer documento
+        if self.documentos[0]:
+            #Verificamos si hay tinta
+            if self.hayTinta():
+                #Mensaje de imprimir documento
+                print(f'{self.documentos[0]} impreso.')
+
+                #Descolamos el primer documento de la cola en la impresora -> imprimimos
+                self.documentos.pop(0)
+
+                #Restamos una unidad a tinta
+                self.tinta -= 1
+            else:
+                #Mensaje no hay tinta
+                print(f'{self.nombre} no tiene mas tinta.')
+        #Mensaje, no hay documentos
+        else:
+            print('No hay documentos en cola.')
+
+    def cargar_tinta(self):
+        self.tinta = self.capacidad_max_tinta
+    
+    def __str__(self):
+        return str(f'{self.nombre} - {self.capacidad_max_tinta} - {self.tinta}')
+    
+class Oficina:
+    def __init__(self):
+        self.impresoras = []
+    
+    def agregar_impresora(self, impresora):
+        self.impresoras.append(impresora)
+
+    def impresora(self, nombreImpresora):
+        for impre in self.impresoras:
+            if impre.nombre == nombreImpresora:
+                return impre
+        print(f'No existe la impresora "{nombre}".')
+
+    def quitar_impresora(self, nombre):
+        for i, impre in enumerate(self.impresoras):
+            if impre.nombre == nombre:
+                print(f'Se elimino la impresora {impre.nombre}.')
+                self.impresoras.pop(i)
+                return 1
+        print(f'No existe la impresora "{nombre}".')
+
+    def obtener_impresora_libre(self):
+        impresoraLibre = self.impresoras[0]
+        for impre in self.impresoras[1:]:
+            if len(impre.documentos) < len(impresoraLibre.documentos):
+                impresoraLibre = impre
+        return impresoraLibre
+
+
+# e1643
+# En la parada del colectivo 130 pueden ocurrir dos eventos diferentes:
+#  Llega una persona
+#  Llega un colectivo con 𝑛 asientos libres, y se suben al mismo todas las personas que están
+#   esperando, en orden de llegada, hasta que no quedan asientos libres.
+# Cada evento se representa con una tupla que incluye:
+#  El instante de tiempo (cantidad de segundos desde el inicio del día)
+#  El tipo de evento, que puede ser 'p' (persona) o 'c' (colectivo).
+#  En el caso de un evento de tipo 'c' hay un tercer elemento que es la cantidad de asientos libres.
+# Escribir una función que recibe una lista de eventos, ordenados cronológicamente, y devuelva
+#  el promedio de tiempo de espera de los pasajeros en la parada.
+
+def promedio_espera(eventos_ordenados):
+    """Recibe una lista de eventos ordenados cronologicamente, separados por tuplas y devuelve el promedio de tiempo de espera de los
+    pasajeros
+    Ejemplo de eventos -> espera([(35,'p'), (43,'p'), (80,'c',1), (98,'p'), (142,'c',2)])
+    """
+    instantes_tiempo = []
+    tiemposDeEspera = []
+    n_pasajeros = 0
+    sumTiempos = 0
+    for evento in eventos_ordenados:
+        if evento[1] == 'p':
+            #Si el evento es Pasajero, guardamos los tiempos hasta que llegue un evento Colectivo
+            instantes_tiempo.append(evento[0])
+            #Aumentamos en 1 la cantidad de pasajeros
+            n_pasajeros += 1
+        else:
+            #Si el evento es Colectivo
+            #Creamos un ciclo con vueltas = cantidad de asientos libres
+            for i in range(0, evento[2]):
+                # Al tiempo del evento -> Colectivo le restamos el tiempo de espera del evento -> Pasajero
+                #  y agregamos el resultado a una lista
+                tiempoDeEspera = evento[0] - instantes_tiempo[0]
+                tiemposDeEspera.append(tiempoDeEspera)
+                sumTiempos += (tiempoDeEspera)
+                # Desencolamos siempre el primer pasajero -> Lo eliminamos
+                instantes_tiempo.pop(0)
+
+    return sumTiempos / n_pasajeros
+
+#e1645
+#Crear una clase PilaConMaximo que soporte las operaciones de Pila
+#(apilar(elemento) y desapilar()), y además incluya el método obtener_maximo() en tiempo
+#constante. Ayuda: usar dos pilas, una para guardar los elementos y otra para guardar los máximos.
+ 
+class PilaConMaximo:
+    def __init__(self):
+        self.pilaEntera = []
+        self.pilaMaximos = []
+
+    def estaVacia(self):
+        return not len(self.pilaEntera)
+
+    def apilar(self, valor):
+        if self.estaVacia():
+            self.pilaEntera.append(valor)
+            self.pilaMaximos.append(valor)
+        else:
+            self.pilaEntera.append(valor)
+            if valor >= self.pilaMaximos[len(self.pilaMaximos)-1]:
+                self.pilaMaximos.append(valor)
+    
+    def desapilar(self):
+        desapilado = self.pilaEntera[len(self.pilaEntera)-1]
+        if desapilado == self.pilaMaximos[len(self.pilaMaximos)-1]:
+            self.pilaEntera.pop()
+            self.pilaMaximos.pop()
+        else:
+            self.pilaEntera.pop()
+    
+    def obtener_maximo(self):
+        return self.pilaMaximos[len(self.pilaMaximos)-1]
+
+
+#e1646
+# Escribir una función que recibe una expresión matemática (en forma de cadena)
+# y devuelve True si los paréntesis ('()'), corchetes ('[]') y llaves ('{}') están correctamente balanceados, False en caso contrario
+#Ejemplos
+# validar('(x+y)/2') -> True
+# validar('[8*4(x+y)]+{2/5}') -> True
+# validar('(x+y]/2') -> False
+# validar('1+)2(+3') -> False
+
+class Pila:
+    """Representa una pila con operaciones de apilar, desapilar y
+    verificar si está vacía."""
+    def __init__(self):
+        """Crea una pila vacía."""
+        self.items = []
+
+    def apilar(self, x):
+        """Apila el elemento x."""
+        self.items.append(x)
+
+    def desapilar(self):
+        """Desapila el elemento x y lo devuelve.
+        Si la pila está vacía levanta una excepción."""
+        if self.esta_vacia():
+            raise ValueError("La pila está vacía")
+        return self.items.pop()
+
+    def ultimo(self):
+        return self.items[len(self.items)-1]
+
+    def esta_vacia(self):
+        """Devuelve True si la lista está vacía, False si no."""
+        return len(self.items) == 0
+
+def sonPareja(simbolo_apertura, simbolo_cierre):
+    aperturas = '([{'
+    cierres = ')]}'
+    return aperturas.index(simbolo_apertura) == cierres.index(simbolo_cierre)
+
+def soloSimbolos(expresion):
+    validos = '()[]{}'
+    res = ''
+    for caracter in expresion:
+        if caracter in validos:
+            res += caracter
+    return res
+
+def validar(expresion):
+    p = Pila()
+    aperturas = '([{'
+    cierres = ')]}'
+    
+    # Dejamos la expresion solo con los signos que nos interesan
+    exp = soloSimbolos(expresion)
+    # Recorremos cada uno de los CARACTERES de la EXPRESION
+    for indice in range(0, len(exp)):
+        # Guardamos el CARACTER para validaciones
+        simbolo = exp[indice]
+        # Si es un simbolo de apertera
+        if simbolo in aperturas:
+            # Lo apilamos en la pila
+            p.apilar(simbolo)
+        # Si no es un simbolo de apertura, por descarte es de CIERRE
+        else:
+            # Verificamos si la pila esta vacia
+            if p.esta_vacia():
+                # Si esta vacia retornamos 'False' ya que la EXPRESION siempre debe empezar con un simbolo de APERTURA
+                print('Primer Return False')
+                return False
+            else:
+                # Si no esta vacia verificamos que el ultimo ELEMENTO de la pila y el CARACTER ACTUAL sean PAREJA
+                apertura = p.ultimo()
+                if not sonPareja(apertura, simbolo):
+                    # Si no son pareja, retornamos 'False' ya que los SIMBOLOS NO estan BALANCEADOS
+                    print('Segundo Return False')
+                    return False
+                else:
+                    p.desapilar()
+                    # Si son pareja, el ciclo sigue.
+        
+    # Al terminar el ciclo si la pila esta vacia retornamos True ya que todos los signos estaban balanceados
+    if p.esta_vacia():
+        return True
+    else:
+        # Si no esta vacia, quedo un signo sin pareja y retornamos 'False'
+        print('Tercer Return False')
+        return False
+
+
+#e1841
+#Mostrar los pasos del ordenamiento de la lista 0 9 3 8 5 3 2 4 con los algoritmos de INSERCCION Y SELECCION.
+
+
+def buscarMayor(lista):
+    mayor = lista[0]
+    for i,valor in enumerate(lista):
+        if valor > mayor:
+            mayor = valor
+    return lista.index(mayor)
+
+def ord_seleccion(lista):
+    tope = len(lista)-1
+    while tope > 0:
+        im = buscarMayor(lista[:tope+1])
+        print(f'Lista -> {lista[:tope+1]}   lista[{im}]={lista[im]} <-> lista[{tope}]={lista[tope]}. El valor MAYOR que intercambiamos ahora esta ordenado, ya no lo tocamos.')
+        #Similar al metodo Burbuja pero sin Auxiliares y con Tuplas.
+        lista[im], lista[tope] = lista[tope], lista[im]
+        tope -= 1
+    return lista
+
+def reubicar(lista, pos):
+    v = lista[pos]
+    iteraciones = pos
+    while iteraciones > 0 and v < lista[iteraciones - 1]:
+        lista[iteraciones] = lista[iteraciones - 1]
+        iteraciones -= 1
+    lista[iteraciones] = v
+
+def ord_inserccion(lista):
+    # Recorremos todos los elementos
+    for i in range(len(lista)-1):
+        #Si el elemento siguiente es menor al actual debemos REUBICAR
+        if lista[i + 1] < lista[i]:
+            reubicar(lista, i + 1)
+    return lista
+
+# La recursividad es una funcion que se llama asi misma
+# Para una recursividad debemos identificar 2 casos
+#  1) Caso Base      -> Es la respuesta que ya conocemos
+#  2) Caso General   -> Es 
+# Repasando recursividad xd
+
+#Sacar la suma de 1 a N
+def recursividad(n):
+    if n == 1:
+        return 1
+    else:
+        return n + recursividad(n - 1)
+
+#Factorial de n
+def factorial(n):
+    #Caso base:
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
+
+#Recorrer una lista de manera recursiva
+def recorrividad(lista, index = 0):
+    if index != len(lista):
+        print(lista[index])
+        recorrividad(lista, index+1)
+
+
+
+def quick_sort(lista):
+    """Ordena la lista de forma recursiva.
+        Pre: los elementos de la lista deben ser comparables.
+        Devuelve: una nueva lista con los elementos ordenados."""
+    if len(lista) < 2:
+        return lista
+
+    menores, medio, mayores = _partition(lista)
+    return quick_sort(menores) + medio + quick_sort(mayores)
+
+def _partition(lista):
+    """Pre: lista no vacía.
+    Devuelve: tres listas: menores, medio y mayores."""
+    pivote = lista[0]
+    menores = []
+    mayores = []
+    for x in range(1, len(lista)):
+        if lista[x] < pivote:
+            menores.append(lista[x])
+        else:
+            mayores.append(lista[x])
+    return menores, [pivote], mayores
 
